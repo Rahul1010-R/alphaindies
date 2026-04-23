@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlphaIndies | Technology Vision</title>
+
+    <!-- Tailwind CSS Integration for the Drones Page -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        base: '#f6fbff',
+                        panel: '#ffffff',
+                        muted: '#6b7680',
+                        textmain: '#071325',
+                        accent: '#0b74de',
+                        accent2: '#4fb0ff',
+                    },
+                    fontFamily: {
+                        sans: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glass': '0 18px 40px rgba(9,30,46,0.06)',
+                        'glow': '0 0 30px rgba(11,116,222,0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS for the Home Page and Global SPA Styles -->
+    <style>
+        /* =============================
+           GLOBAL & SPA STYLES
+           ============================= */
+        :root {
+            --bg-base: #f6fbff;
+            --panel: #ffffff;
+            --muted: #6b7680;
+            --text: #071325;
+            --accent: #0b74de;
+            --accent-2: #4fb0ff;
+            --accent-glow: rgba(11,116,222,0.14);
+            --radius: 14px;
+            --card-shadow: 0 18px 40px rgba(9,30,46,0.06);
+            --hero-overlay: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(240,248,255,1) 100%);
+            --mono: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: var(--mono);
+            background: linear-gradient(180deg, var(--bg-base) 0%, #eef7ff 100%);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* SPA Routing Classes */
+        .page-view {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+        }
+        .page-view.active {
+            display: block;
+            opacity: 1;
+            animation: fadeInPage 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeInPage {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =============================
+           HOME PAGE SPECIFIC STYLES
+           ============================= */
+        #view-home a { color: inherit; text-decoration: none; display: block; }
+        
+        /* Header */
+        #view-home .brand-logo-container { position: absolute; top: 22px; left: 28px; z-index: 100; display: flex; align-items: center; text-decoration: none; gap: 10px; }
+        #view-home .nav-container { position: absolute; top: 32px; right: 36px; z-index: 100; display: flex; gap: 30px; }
+        #view-home .nav-link { color: rgba(7,19,37,0.85); font-size: 0.95rem; font-weight: 600; letter-spacing: 0.4px; position: relative; cursor: pointer; display: inline-block; }
+        #view-home .nav-link::after { content: ''; position: absolute; left: 0; bottom: -6px; width: 0; height: 3px; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .28s ease; }
+        #view-home .nav-link:hover::after { width: 100%; }
+        #view-home .nav-link:hover { color: var(--accent); }
+
+        /* Hero */
+        #view-home .hero { height: 100vh; width: 100%; position: relative; display: flex; align-items: center; justify-content: flex-start; padding: 0 10%; overflow: hidden; }
+        #view-home .hero-bg-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; filter: contrast(1.02) saturate(1.02); }
+        #view-home .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; transform: scale(1); transition: opacity .6s, transform .6s; }
+        
+        #view-home .slide:nth-child(1) { background-image: url('images/hero1.jpg'); animation: slideCycle 15s infinite; animation-delay: 0s; }
+        #view-home .slide:nth-child(2) { background-image: url('images/hero2.jpg'); animation: slideCycle 15s infinite; animation-delay: 5s; }
+        #view-home .slide:nth-child(3) { background-image: url('images/hero3.jpg'); animation: slideCycle 15s infinite; animation-delay: 10s; }
+
+        @keyframes slideCycle { 0% {opacity:0; transform:scale(1)} 6% {opacity:1} 33% {opacity:1; transform:scale(1.06)} 38% {opacity:0} 100% {opacity:0} }
+
+        #view-home .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,255,255,0.92) 0%, rgba(245,250,255,0.7) 100%); z-index: 1; pointer-events: none; }
+        #view-home .hero::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 160px; background: var(--hero-overlay); pointer-events: none; z-index: 2; }
+
+        #view-home .hero-content { position: relative; z-index: 3; max-width: 680px; }
+        #view-home .hero-tag { display: inline-block; padding: 8px 16px; background: linear-gradient(90deg, rgba(11,116,222,0.08), rgba(79,176,255,0.04)); border-radius: 999px; color: var(--accent); font-weight: 700; font-size: 0.9rem; margin-bottom: 18px; letter-spacing: 0.8px; }
+        #view-home .hero h1 { font-size: 4rem; line-height: 1.05; margin-bottom: 14px; color: var(--text); font-weight: 800; }
+        #view-home .text-gradient { background: linear-gradient(90deg, var(--text), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #view-home .hero p { font-size: 1.1rem; color: var(--muted); margin-bottom: 28px; padding-left: 18px; border-left: 3px solid rgba(11,116,222,0.12); }
+
+        #view-home .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+        #view-home .btn-hero { padding: 14px 28px; border-radius: 10px; font-weight: 800; cursor: pointer; border: none; transition: all 0.3s; display: inline-block; text-align: center; }
+        #view-home .btn-fill { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #fff; box-shadow: 0 18px 46px rgba(11,116,222,0.25); }
+        #view-home .btn-fill:hover { box-shadow: 0 22px 50px rgba(11,116,222,0.4); }
+        #view-home .btn-outline { background: transparent; border: 2px solid rgba(7,19,37,0.1); color: var(--text); backdrop-filter: blur(6px); }
+        #view-home .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+        
+        /* Company Info Section */
+        #view-home .company-info { padding: 90px 20px 20px; text-align: center; max-width: 900px; margin: 0 auto; }
+        #view-home .company-info h2 { font-size: 2.4rem; margin-bottom: 14px; color: var(--accent); font-weight: 800; }
+        #view-home .company-info p { color: var(--muted); font-size: 1.05rem; line-height: 1.6; }
+        #view-home .company-info strong { color: var(--text); font-weight: 700; }
+
+        /* Content Sections */
+        #view-home .section-container { padding: 44px 20px; max-width: 1200px; margin: 0 auto; }
+
+        /* Animated Big Cards */
+        #view-home .big-card { display: block; width: 100%; height: 500px; border-radius: var(--radius); overflow: hidden; position: relative; box-shadow: var(--card-shadow); cursor: pointer; border: 1px solid rgba(11,116,222,0.03); }
+        #view-home .big-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform .8s cubic-bezier(.2,.9,.3,1); }
+        #view-home .big-card-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 46px; background: linear-gradient(0deg, rgba(6,11,20,0.95) 0%, rgba(6,11,20,0) 100%); color: #fff; z-index: 3; transition: all 0.4s ease; }
+        
+        #view-home .big-card h3 { font-size: 2rem; margin-bottom: 10px; font-weight: 800; transition: all 0.4s ease; }
+        #view-home .big-card p { font-size: 1.05rem; opacity: 0; max-height: 0; transition: all 0.4s ease; }
+
+        #view-home .big-card:hover .big-card-overlay { background: linear-gradient(0deg, rgba(6,11,20,1) 0%, rgba(6,11,20,0.4) 100%); padding-bottom: 56px; }
+        #view-home .big-card:hover p { opacity: 0.95; max-height: 100px; transition-delay: 0.1s; }
+
+        /* App Grid */
+        #view-home .section-header { text-align: center; margin: 60px 0 36px 0; font-size: 2rem; font-weight: 800; color: var(--text); }
+        #view-home .app-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 22px; }
+        #view-home .app-card { display: block; background: linear-gradient(180deg, #ffffff, #f7fbff); border-radius: 12px; overflow: hidden; box-shadow: var(--card-shadow); transition: transform .28s ease; }
+        #view-home .app-card:hover { box-shadow: 0 28px 60px var(--accent-glow); }
+        #view-home .app-card-img { height: 170px; background-size: cover; background-position: center; }
+        #view-home .app-content { padding: 16px; }
+        #view-home .app-content h4 { font-size: 1.05rem; margin-top: 6px; color: var(--text); font-weight: 800;}
+        #view-home .app-content span { font-size: 0.78rem; color: var(--accent); font-weight: 700; text-transform: uppercase; }
+
+        /* Footer Styles */
+        #view-home footer { margin-top: 80px; padding: 60px 20px; background: white; text-align: center; border-top: 1px solid rgba(11,116,222,0.1); }
+        #view-home .contact-title { font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+        #view-home .contact-sub { color: var(--muted); margin-bottom: 20px; }
+        #view-home .contact-email { font-size: 1.5rem; font-weight: 800; color: var(--accent); text-decoration: none; display: inline-block; transition: all 0.3s ease; }
+        #view-home .contact-email:hover { color: var(--accent-2); text-shadow: 0 4px 15px rgba(11,116,222,0.2); }
+
+        /* Accent Lines */
+        #view-home h3 { position: relative; }
+        #view-home h3::after { content: ''; display: block; width: 56px; height: 6px; border-radius: 6px; margin-top: 8px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); box-shadow: 0 8px 28px rgba(11,116,222,0.10); opacity: 0.98; }
+        #view-home .contact-title::after { margin: 8px auto 0; }
+
+        @media (max-width: 980px) {
+            #view-home .hero { padding: 0 6%; }
+            #view-home .brand-logo-container { left: 18px; top: 18px; }
+            #view-home .nav-container { right: 18px; top: 24px; gap: 18px; }
+        }
+        @media (max-width: 700px) {
+            #view-home .hero h1 { font-size: 2.6rem; }
+            #view-home .hero { height: auto; padding: 120px 6% 80px 6%; }
+            #view-home .big-card { height: 360px; }
+        }
+
+        /* =============================
+           DRONES PAGE SPECIFIC STYLES
+           ============================= */
+        /* Glassmorphism Utilities */
+        #view-drones .glass-panel, #view-skylord .glass-panel, #view-swarm .glass-panel, #view-behavior .glass-panel, #view-healing .glass-panel, #view-pollution .glass-panel, #view-twin .glass-panel, #view-farming .glass-panel, #view-medical .glass-panel, #view-recon .glass-panel, #view-company .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 18px 40px rgba(9,30,46,0.04);
+        }
+
+        /* Scroll Animation Classes */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==========================================
+         VIEW 1: HOME PAGE
+         ========================================== -->
+    <div id="view-home" class="page-view active">
+        <!-- Brand Logo -->
+        <a href="#" onclick="switchPage('view-home'); return false;" class="brand-logo-container">
+            <!-- UPLOAD INSTRUCTION: Place 'logo.png' in your images folder -->
+            <img src="images/logo.png" onerror="this.src='https://placehold.co/44x44/0b74de/ffffff?text=Logo'" alt="AlphaIndies Logo" style="height: 44px; width: auto; border-radius: 8px; object-fit: contain; box-shadow: 0 4px 15px rgba(11,116,222,0.15);">
+            <span style="font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; color: var(--text);">AlphaIndies</span>
+        </a>
+
+        <!-- Navigation -->
+        <nav class="nav-container">
+            <a href="#" onclick="switchPage('view-company'); return false;" class="nav-link">Company</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero" aria-label="Hero">
+            <div class="hero-bg-slider">
+                <div class="slide"></div>
+                <div class="slide"></div>
+                <div class="slide"></div>
+            </div>
+
+            <div class="hero-content">
+                <div class="hero-tag">Mission</div>
+                <h1>
+                    AlphaIndies<br>
+                    <span class="text-gradient">Technology Vision</span>
+                </h1>
+                <p>
+                    We believe technology works best. Modern innovation for the Agriculture and Industries.
+                </p>
+
+                <div class="hero-btns">
+                    <button class="btn-hero btn-fill" onclick="document.getElementById('section-agri').scrollIntoView({behavior: 'smooth'})">Explore Tech</button>
+                    <button class="btn-hero btn-outline" onclick="document.getElementById('section-algo').scrollIntoView({behavior: 'smooth'})">Watch Demo</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- WE ARE THE FUTURE SECTION -->
+        <section class="company-info" id="company">
+            <h2>We Are The Future</h2>
+            <p>
+                AlphaIndies is redefining environmental monitoring. 
+                By fusing <strong>Edge AI</strong> with <strong>IoT Sensing</strong>, we transform standard 
+                drones into intelligent data gatherers.
+            </p>
+        </section>
+
+        <!-- SECTION 1: AI DRONES (LINKED TO NEW PAGE) -->
+        <div class="section-container" id="section-agri">
+            <!-- SPA ROUTING TRIGGER: switchPage('view-drones') -->
+            <a href="#" onclick="switchPage('view-drones'); return false;" class="big-card">
+                <img src="images/drone.jpg" class="big-card-img" alt="AI-Powered Drones">
+                <div class="big-card-overlay">
+                    <h3>AI-Powered Drones</h3>
+                    <p>Real-time crop monitoring and Environmental Monitoring (Click to View Project)</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- SECTION 2: ALGORITHM -->
+        <div class="section-container" id="section-algo">
+            <!-- SPA ROUTING TRIGGER: switchPage('view-skylord') -->
+            <a href="#" onclick="switchPage('view-skylord'); return false;" class="big-card">
+                <img src="images/algorithm.jpg" class="big-card-img" alt="Navigation Algorithm">
+                <div class="big-card-overlay">
+                    <h3>Navigation Algorithm</h3>
+                    <p>SkyLord Eyes - The Intelligent Vision Algorithm</p>
+                </div>
+            </a>
+        </div>
+
+        <div class="section-container">
+            <h2 class="section-header">Our 8 Core Capabilities</h2>
+            <div class="app-grid">
+                <a href="#" onclick="switchPage('view-swarm'); return false;" class="app-card"><div class="app-card-img" style="background-image: url('images/swarm.jpg');"></div><div class="app-content"><span>01 / Intelligence</span><h4>Multi-Drone Swarm</h4></div></a>
+                <a href="#" onclick="switchPage('view-behavior'); return false;" class="app-card"><div class="app-card-img" style="background-image: url('images/human-behavior.jpg');"></div><div class="app-content"><span>02 / Analysis</span><h4>Human Behaviour AI</h4></div></a>
+                <a href="#" onclick="switchPage('view-healing'); return false;" class="app-card"><div class="app-card-img" style="background-image: url('images/self-healing.jpg');"></div><div class="app-content"><span>03 / Hardware</span><h4>Self-Healing System</h4></div></a>
+                <a href="#" onclick="switchPage('view-pollution'); return false;" class="app-card"><div class="app-card-img" style="background-image: url('images/pollution.jpg');"></div><div class="app-content"><span>04 / Environment</span><h4>Pollution Prediction</h4></div></a>
+                <a href="#" onclick="switchPage('view-twin'); return false;" class="app-card"><div class="app-card-img" style="background-image: url('images/digital-twin.jpg');"></div><div class="app-content"><span>05 / Mapping</span><h4>3D Digital Twin</h4></div></a>
+                <a href="#" onclick="switchPage('view-farming'); return false;" class="app-card"><div class="app-card-img" style="background-image: url('images/agriculture.jpg');"></div><div class="app-content"><span>06 / Agriculture</span><h4>Predictive Smart Farming</h4></div></a>
+                <a href="#" onclick="switchPage('view-medical'); return false;" class="app-card"><div class="app-card-img" style="background-image: url('images/medical.jpg');"></div><div class="app-content"><span>07 / Emergency</span><h4>Medical Response</h4></div></a>
+                <a href="#" onclick="switchPage('view-recon'); return false;" class="app-card"><div class="app-card-img" style="background-image: url('images/defense.jpg');"></div><div class="app-content"><span>08 / Defense</span><h4>Tactical Recon</h4></div></a>
+            </div>
+        </div>
+
+        <footer id="contact">
+            <h3 class="contact-title">Get in Touch</h3>
+            <p class="contact-sub">Ready to build the future?</p>
+            <a href="mailto:alphaindies@gmail.com" class="contact-email">alphaindies@gmail.com</a>
+            <br><br><br>
+            <small style="color: var(--muted);">© 2025 AlphaIndies. All Rights Reserved.</small>
+        </footer>
+    </div>
+
+
+    <!-- ==========================================
+         VIEW 2: AI DRONES PROJECT PAGE
+         ========================================== -->
+    <div id="view-drones" class="page-view relative">
+        
+        <!-- Navigation (Project Level) -->
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300" id="drones-navbar">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <!-- SPA ROUTING TRIGGER: switchPage('view-home') -->
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+                <div class="hidden md:flex gap-8 text-sm font-semibold text-textmain/80">
+                    <a href="#overview" class="hover:text-accent transition-colors">Overview</a>
+                    <a href="#features" class="hover:text-accent transition-colors">Features</a>
+                    <a href="#architecture" class="hover:text-accent transition-colors">Architecture</a>
+                    <a href="#team" class="hover:text-accent transition-colors">Team</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
+            <div class="max-w-7xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-6">
+                    Next-Gen Edge AI
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-textmain leading-tight">
+                    Intelligent Drones.<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Redefining the Skies.</span>
+                </h1>
+                <p class="mt-4 max-w-2xl text-lg md:text-xl text-muted mx-auto mb-10">
+                    Fusing high-performance Edge AI with advanced IoT sensing. Our autonomous drones analyze environments in real-time without relying on cloud connectivity.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#demo" class="px-8 py-4 rounded-xl bg-gradient-to-r from-accent to-accent2 text-white font-bold shadow-lg shadow-accent/30 hover:shadow-xl hover:shadow-accent/40 transition-all text-center">
+                        Watch Demo
+                    </a>
+                    <a href="#architecture" class="px-8 py-4 rounded-xl bg-white border-2 border-accent/10 text-textmain font-bold hover:border-accent hover:text-accent transition-all text-center">
+                        Explore Architecture
+                    </a>
+                </div>
+            </div>
+
+            <!-- Video/Demo Placeholder -->
+            <div id="demo" class="max-w-6xl mx-auto mt-20 relative rounded-3xl overflow-hidden shadow-2xl animate-on-scroll border border-white/50 bg-black">
+                <!-- UPLOAD INSTRUCTION: Create a 'videos' folder next to your index.html and place 'drone-demo.mp4' inside it -->
+                <video autoplay loop muted playsinline controls poster="images/demo.jpg" class="w-full h-[400px] md:h-[600px] object-cover transition-transform duration-1000">
+                    <source src="videos/drone-demo.mp4" type="video/mp4">
+                </video>
+            </div>
+        </section>
+
+        <!-- Overview Section -->
+        <section id="overview" class="py-24 px-6 bg-white relative">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-textmain">Vision & Snapshot</h2>
+                    <div class="w-16 h-1.5 bg-gradient-to-r from-accent to-accent2 rounded-full mb-8"></div>
+                    <p class="text-muted text-lg mb-6 leading-relaxed">
+                        Traditional drones are merely flying cameras, relying on post-flight analysis or heavy cloud computing. We are shifting the paradigm by bringing the "brain" directly to the edge.
+                    </p>
+                    <p class="text-muted text-lg leading-relaxed">
+                        Our AI-Powered Drones instantly detect anomalies, map terrain, and monitor crop health entirely on-board. This drastically reduces latency, enhances security, and allows for continuous operation in remote areas.
+                    </p>
+                </div>
+                <div class="relative animate-on-scroll" style="transition-delay: 200ms;">
+                    <div class="absolute inset-0 bg-accent/5 rounded-3xl transform translate-x-4 translate-y-4"></div>
+                    <img src="images/drone-pilot.jpg" class="relative rounded-3xl shadow-glass border border-white/50 object-cover h-[450px] w-full" alt="Drone engineering">
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-24 px-6 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-textmain">Core Features</h2>
+                    <p class="text-muted text-lg max-w-2xl mx-auto">Engineered for absolute autonomy and precision.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 rounded-2xl transition-transform duration-300 animate-on-scroll">
+                        <div class="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 text-accent">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Edge Processing</h3>
+                        <p class="text-muted">On-board neural networks process 4K video feeds in real-time without internet connectivity.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl transition-transform duration-300 animate-on-scroll" style="transition-delay: 100ms;">
+                        <div class="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 text-accent">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Swarm Coordination</h3>
+                        <p class="text-muted">Multiple drones communicate seamlessly to cover massive areas, self-organizing flight paths.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl transition-transform duration-300 animate-on-scroll" style="transition-delay: 200ms;">
+                        <div class="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 text-accent">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Obstacle Avoidance</h3>
+                        <p class="text-muted">LiDAR and stereo vision combine to create a 360-degree safety bubble around the aircraft.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section id="architecture" class="py-24 px-6 bg-white border-y border-accent/5">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-textmain">System Architecture</h2>
+                    <p class="text-muted text-lg max-w-2xl mx-auto">The perfect synergy between hardware muscle and software intelligence.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div class="glass-panel p-10 rounded-3xl animate-on-scroll border border-accent/10 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-3xl"></div>
+                        <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                            Hardware Stack
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3"><div class="mt-1 w-2 h-2 rounded-full bg-accent shrink-0"></div><div><strong class="block text-textmain">NVIDIA Jetson Edge Devices</strong><span class="text-muted text-sm">Providing server-level compute in a lightweight form factor.</span></div></li>
+                            <li class="flex items-start gap-3"><div class="mt-1 w-2 h-2 rounded-full bg-accent shrink-0"></div><div><strong class="block text-textmain">Multispectral Sensors</strong><span class="text-muted text-sm">Capturing data beyond the human visual spectrum.</span></div></li>
+                            <li class="flex items-start gap-3"><div class="mt-1 w-2 h-2 rounded-full bg-accent shrink-0"></div><div><strong class="block text-textmain">High-Torque Brushless Motors</strong><span class="text-muted text-sm">Ensuring stability in high wind conditions up to 40km/h.</span></div></li>
+                        </ul>
+                    </div>
+                    <div class="glass-panel p-10 rounded-3xl animate-on-scroll border border-accent/10 relative overflow-hidden" style="transition-delay: 200ms;">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-accent2/5 rounded-full blur-3xl"></div>
+                        <h3 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                            <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                            Software Stack
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3"><div class="mt-1 w-2 h-2 rounded-full bg-accent shrink-0"></div><div><strong class="block text-textmain">Custom Vision Models (PyTorch)</strong><span class="text-muted text-sm">Trained on massive proprietary datasets for object and anomaly detection.</span></div></li>
+                            <li class="flex items-start gap-3"><div class="mt-1 w-2 h-2 rounded-full bg-accent shrink-0"></div><div><strong class="block text-textmain">ROS2 (Robot Operating System)</strong><span class="text-muted text-sm">The backbone for real-time sensor fusion and flight control.</span></div></li>
+                            <li class="flex items-start gap-3"><div class="mt-1 w-2 h-2 rounded-full bg-accent shrink-0"></div><div><strong class="block text-textmain">SkyLord Navigation Algorithm</strong><span class="text-muted text-sm">Our proprietary path planning system for GPS-denied environments.</span></div></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Applications Section -->
+        <section class="py-24 px-6 relative">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center text-textmain animate-on-scroll">Primary Applications</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="group relative rounded-2xl overflow-hidden h-64 animate-on-scroll cursor-pointer">
+                        <img src="images/agriculture.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" alt="Agriculture">
+                        <div class="absolute inset-0 bg-gradient-to-t from-textmain/90 to-transparent flex flex-col justify-end p-6">
+                            <h4 class="text-white font-bold text-xl mb-1 group-hover:text-accent2 transition-colors">Precision Agri</h4>
+                            <p class="text-white/80 text-sm opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">Crop health and yield prediction.</p>
+                        </div>
+                    </div>
+                    <div class="group relative rounded-2xl overflow-hidden h-64 animate-on-scroll cursor-pointer" style="transition-delay: 100ms;">
+                        <img src="images/rescue.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" alt="Search and Rescue">
+                        <div class="absolute inset-0 bg-gradient-to-t from-textmain/90 to-transparent flex flex-col justify-end p-6">
+                            <h4 class="text-white font-bold text-xl mb-1 group-hover:text-accent2 transition-colors">Search & Rescue</h4>
+                            <p class="text-white/80 text-sm opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">Thermal human detection AI.</p>
+                        </div>
+                    </div>
+                    <div class="group relative rounded-2xl overflow-hidden h-64 animate-on-scroll cursor-pointer" style="transition-delay: 200ms;">
+                        <img src="images/mapping.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" alt="Mapping">
+                        <div class="absolute inset-0 bg-gradient-to-t from-textmain/90 to-transparent flex flex-col justify-end p-6">
+                            <h4 class="text-white font-bold text-xl mb-1 group-hover:text-accent2 transition-colors">3D Mapping</h4>
+                            <p class="text-white/80 text-sm opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">Digital twins of infrastructure.</p>
+                        </div>
+                    </div>
+                    <div class="group relative rounded-2xl overflow-hidden h-64 animate-on-scroll cursor-pointer" style="transition-delay: 300ms;">
+                        <img src="images/environment.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700" alt="Environment">
+                        <div class="absolute inset-0 bg-gradient-to-t from-textmain/90 to-transparent flex flex-col justify-end p-6">
+                            <h4 class="text-white font-bold text-xl mb-1 group-hover:text-accent2 transition-colors">Emissions Tracking</h4>
+                            <p class="text-white/80 text-sm opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">Air quality & pollution monitoring.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section id="team" class="py-24 px-6 bg-white border-t border-accent/5">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h3 class="text-accent font-bold tracking-wide uppercase text-sm mb-2">Behind the build</h3>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-textmain">Our Team</h2>
+                    <p class="text-muted text-lg max-w-2xl mx-auto">A focused team of B.Tech students from AI & Data Science — combining hardware, AI, and cloud expertise.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                    <!-- Rahul -->
+                    <div class="glass-panel bg-white p-8 rounded-2xl text-center animate-on-scroll shadow-glass transition-transform duration-300">
+                        <!-- UPLOAD INSTRUCTION: Place 'rahul.jpg' in your images folder -->
+                        <img src="images/rahul.jpg" onerror="this.src='https://placehold.co/300x300/f6fbff/0b74de?text=Upload+Photo'" alt="Rahul Raveendran" class="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-accent/10 shadow-lg object-cover">
+                        <h4 class="font-bold text-xl text-textmain mb-1">Rahul Raveendran</h4>
+                        <p class="text-accent text-xs font-bold uppercase tracking-wider mb-4">Dashboard Engineer</p>
+                        <p class="text-muted text-sm mb-6">Expert in data visualization and dashboard UX interfaces for mission control.</p>
+                        <div class="flex justify-center gap-5 text-accent">
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.866l5.6-6.812zm9.201-1.451l4.623-3.746v9.458l-4.623-5.712z"/></svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Avinash -->
+                    <div class="glass-panel bg-white p-8 rounded-2xl text-center animate-on-scroll shadow-glass transition-transform duration-300" style="transition-delay: 100ms;">
+                        <!-- UPLOAD INSTRUCTION: Place 'avinash.jpg' in your images folder -->
+                        <img src="images/avinash.jpg" onerror="this.src='https://placehold.co/300x300/f6fbff/0b74de?text=Upload+Photo'" alt="Avinash S" class="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-accent/10 shadow-lg object-cover">
+                        <h4 class="font-bold text-xl text-textmain mb-1">Avinash S</h4>
+                        <p class="text-accent text-xs font-bold uppercase tracking-wider mb-4">Cloud Engineer</p>
+                        <p class="text-muted text-sm mb-6">Manages cloud infrastructure, database scalability, and secure API endpoints.</p>
+                        <div class="flex justify-center gap-5 text-accent">
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.866l5.6-6.812zm9.201-1.451l4.623-3.746v9.458l-4.623-5.712z"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- Ranjith -->
+                    <div class="glass-panel bg-white p-8 rounded-2xl text-center animate-on-scroll shadow-glass transition-transform duration-300" style="transition-delay: 200ms;">
+                        <!-- UPLOAD INSTRUCTION: Place 'ranjith.jpg' in your images folder -->
+                        <img src="images/ranjith.jpg" onerror="this.src='https://placehold.co/300x300/f6fbff/0b74de?text=Upload+Photo'" alt="Ranjith V" class="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-accent/10 shadow-lg object-cover">
+                        <h4 class="font-bold text-xl text-textmain mb-1">Ranjith V</h4>
+                        <p class="text-accent text-xs font-bold uppercase tracking-wider mb-4">AI-System Integration Engineer</p>
+                        <p class="text-muted text-sm mb-6">Leads the AI pipeline architecture and seamless integration of hardware, software, and cloud systems.</p>
+                        <div class="flex justify-center gap-5 text-accent">
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.866l5.6-6.812zm9.201-1.451l4.623-3.746v9.458l-4.623-5.712z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-10 text-center glass-panel mt-auto bg-white border-t border-accent/10">
+            <p class="text-muted text-sm">&copy; 2025 AlphaIndies. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 3: NAVIGATION ALGORITHM (SKYLORD)
+         ========================================== -->
+    <div id="view-skylord" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+
+        <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
+            <div class="max-w-7xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-6">
+                    Proprietary Software
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-textmain leading-tight">
+                    SkyLord Eyes.<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Autonomous Navigation.</span>
+                </h1>
+                <p class="mt-4 max-w-2xl text-lg md:text-xl text-muted mx-auto mb-10">
+                    Breaking free from GPS reliance. Our intelligent vision algorithm empowers machines to understand, map, and traverse complex, unpredictable environments in real-time.
+                </p>
+            </div>
+
+            <div id="skylord-demo" class="max-w-6xl mx-auto mt-20 relative rounded-3xl overflow-hidden shadow-2xl animate-on-scroll border border-white/50 bg-black">
+                <!-- UPLOAD INSTRUCTION: Create a 'videos' folder next to your index.html and place 'skylord-demo.mp4' inside it -->
+                <video autoplay loop muted playsinline controls poster="images/algorithm.jpg" class="w-full h-[400px] md:h-[600px] object-cover transition-transform duration-1000">
+                    <source src="videos/skylord-demo.mp4" type="video/mp4">
+                </video>
+            </div>
+        </section>
+
+        <section id="skylord-overview" class="py-24 px-6 bg-white relative">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="relative animate-on-scroll">
+                    <div class="absolute inset-0 bg-accent/5 rounded-3xl transform -translate-x-4 translate-y-4"></div>
+                    <img src="images/digital-twin.jpg" class="relative rounded-3xl shadow-glass border border-white/50 object-cover h-[450px] w-full" alt="Digital Mapping">
+                </div>
+                <div class="animate-on-scroll" style="transition-delay: 200ms;">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-textmain">The Brain Behind the Machine</h2>
+                    <div class="w-16 h-1.5 bg-gradient-to-r from-accent to-accent2 rounded-full mb-8"></div>
+                    <p class="text-muted text-lg mb-6 leading-relaxed">
+                        Operating in GPS-denied environments like dense forests, urban canyons, or indoor industrial facilities requires more than basic telemetry. It requires true spatial awareness.
+                    </p>
+                    <p class="text-muted text-lg leading-relaxed">
+                        SkyLord Eyes uses advanced Visual-Inertial Odometry (VIO) and continuous Simultaneous Localization and Mapping (SLAM). It essentially allows our drones to "see" the world like humans do, mapping their surroundings frame-by-frame and predicting dynamic obstacles before they become a threat.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="skylord-capabilities" class="py-24 px-6 relative">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 text-textmain">Core Algorithm Capabilities</h2>
+                    <p class="text-muted text-lg max-w-2xl mx-auto">Transforming raw pixel data into actionable flight physics.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-panel p-8 rounded-2xl transition-transform duration-300 animate-on-scroll">
+                        <div class="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 text-accent">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Semantic Segmentation</h3>
+                        <p class="text-muted">Instantly categorizes millions of pixels into 'sky', 'building', 'human', or 'tree' to understand context.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl transition-transform duration-300 animate-on-scroll" style="transition-delay: 100ms;">
+                        <div class="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 text-accent">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" /></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Continuous SLAM</h3>
+                        <p class="text-muted">Builds high-resolution 3D point clouds of unmapped territories while simultaneously determining its own location within it.</p>
+                    </div>
+                    <div class="glass-panel p-8 rounded-2xl transition-transform duration-300 animate-on-scroll" style="transition-delay: 200ms;">
+                        <div class="w-14 h-14 rounded-xl bg-accent/10 flex items-center justify-center mb-6 text-accent">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Predictive Pathing</h3>
+                        <p class="text-muted">Calculates thousands of potential flight trajectories per second to actively avoid moving obstacles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skylord-metrics" class="py-24 px-6 bg-textmain text-white relative border-y border-white/10">
+            <div class="max-w-7xl mx-auto animate-on-scroll">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-5xl font-extrabold text-accent mb-2">&lt;10ms</div>
+                        <div class="text-white/70 font-semibold uppercase tracking-wider text-sm">Inference Latency</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-extrabold text-accent mb-2">60+</div>
+                        <div class="text-white/70 font-semibold uppercase tracking-wider text-sm">Frames Per Second</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-extrabold text-accent mb-2">3cm</div>
+                        <div class="text-white/70 font-semibold uppercase tracking-wider text-sm">Position Accuracy</div>
+                    </div>
+                    <div>
+                        <div class="text-5xl font-extrabold text-accent mb-2">Zero</div>
+                        <div class="text-white/70 font-semibold uppercase tracking-wider text-sm">Cloud Dependency</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="py-10 text-center glass-panel mt-auto bg-white">
+            <p class="text-muted text-sm">&copy; 2025 AlphaIndies. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 4: CAPABILITY - SWARM
+         ========================================== -->
+    <div id="view-swarm" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+        <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+            <div class="max-w-5xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-4">01 / Intelligence</div>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-textmain">Multi-Drone Swarm.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Collaborative Intelligence.</span></h1>
+                <div class="mt-12 rounded-3xl overflow-hidden shadow-2xl relative border border-white/50 h-[400px]">
+                    <img src="images/swarm.jpg" onerror="this.src='https://images.unsplash.com/photo-1555626906-fcf10d6851b4?auto=format&fit=crop&w=1200&q=80'" class="w-full h-full object-cover" alt="Swarm">
+                </div>
+            </div>
+        </section>
+        <section class="py-20 px-6 bg-white relative">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center animate-on-scroll">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4 text-textmain">Decentralized Coordination</h2>
+                    <div class="w-12 h-1 bg-accent rounded-full mb-6"></div>
+                    <p class="text-muted text-lg">Our swarming logic allows fleets of autonomous drones to communicate locally. If one node drops, the rest of the swarm reorganizes instantly to ensure mission completion without relying on a central command tower.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border border-accent/10">
+                    <h3 class="font-bold text-xl mb-4">Swarm Metrics</h3>
+                    <ul class="space-y-4 text-muted">
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> 10,000+ Nodes Scalability</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> P2P Encrypted Telemetry</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Sub-millisecond Synchronization</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <footer class="py-10 text-center glass-panel mt-auto"><p class="text-muted text-sm">&copy; 2025 AlphaIndies.</p></footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 5: CAPABILITY - HUMAN BEHAVIOUR AI
+         ========================================== -->
+    <div id="view-behavior" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+        <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+            <div class="max-w-5xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-4">02 / Analysis</div>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-textmain">Human Behaviour AI.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Real-time Anomaly Detection.</span></h1>
+                <div class="mt-12 rounded-3xl overflow-hidden shadow-2xl relative border border-white/50 h-[400px]">
+                    <img src="images/human-behavior.jpg" onerror="this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80'" class="w-full h-full object-cover" alt="Human Behavior AI">
+                </div>
+            </div>
+        </section>
+        <section class="py-20 px-6 bg-white relative">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center animate-on-scroll">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4 text-textmain">Predictive Threat Assessment</h2>
+                    <div class="w-12 h-1 bg-accent rounded-full mb-6"></div>
+                    <p class="text-muted text-lg">Using advanced kinematic skeletal tracking and edge-processed neural networks, our systems can detect distress signals, unauthorized access, or erratic crowd movements entirely from aerial feeds.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border border-accent/10">
+                    <h3 class="font-bold text-xl mb-4">AI Metrics</h3>
+                    <ul class="space-y-4 text-muted">
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> 4K Skeletal Tracking</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Sub-second Threat Identification</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Thermal Signature Matching</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <footer class="py-10 text-center glass-panel mt-auto"><p class="text-muted text-sm">&copy; 2025 AlphaIndies.</p></footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 6: CAPABILITY - SELF-HEALING SYSTEM
+         ========================================== -->
+    <div id="view-healing" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+        <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+            <div class="max-w-5xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-4">03 / Hardware</div>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-textmain">Self-Healing System.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Unstoppable Operations.</span></h1>
+                <div class="mt-12 rounded-3xl overflow-hidden shadow-2xl relative border border-white/50 h-[400px]">
+                    <img src="images/self-healing.jpg" onerror="this.src='https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80'" class="w-full h-full object-cover" alt="Self Healing">
+                </div>
+            </div>
+        </section>
+        <section class="py-20 px-6 bg-white relative">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center animate-on-scroll">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4 text-textmain">Dynamic Redundancy</h2>
+                    <div class="w-12 h-1 bg-accent rounded-full mb-6"></div>
+                    <p class="text-muted text-lg">Hardware failure shouldn't mean mission failure. Our flight controllers use dynamic circuitry rerouting. If a motor drops efficiency or a sensor fails, the AI instantly compensates using secondary modules to guarantee a safe return.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border border-accent/10">
+                    <h3 class="font-bold text-xl mb-4">Hardware Reliability</h3>
+                    <ul class="space-y-4 text-muted">
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Triple-Redundant Sensors</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Automated Auto-Charging Pads</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> In-flight Diagnostic Logic</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <footer class="py-10 text-center glass-panel mt-auto"><p class="text-muted text-sm">&copy; 2025 AlphaIndies.</p></footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 7: CAPABILITY - POLLUTION PREDICTION
+         ========================================== -->
+    <div id="view-pollution" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+        <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+            <div class="max-w-5xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-4">04 / Environment</div>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-textmain">Pollution Prediction.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Hyper-Local AQI Modeling.</span></h1>
+                <div class="mt-12 rounded-3xl overflow-hidden shadow-2xl relative border border-white/50 h-[400px]">
+                    <img src="images/pollution.jpg" onerror="this.src='https://images.unsplash.com/photo-1611273426858-450d8e3c9fce?auto=format&fit=crop&w=1200&q=80'" class="w-full h-full object-cover" alt="Pollution">
+                </div>
+            </div>
+        </section>
+        <section class="py-20 px-6 bg-white relative">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center animate-on-scroll">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4 text-textmain">Gas & Particulate Tracking</h2>
+                    <div class="w-12 h-1 bg-accent rounded-full mb-6"></div>
+                    <p class="text-muted text-lg">We equip our drones with industrial-grade olfactory sensors. By flying grid patterns over urban or industrial zones, we generate 3D heatmaps of CO2, Methane, and PM2.5 levels to predict emission spreads before they hit residential areas.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border border-accent/10">
+                    <h3 class="font-bold text-xl mb-4">Sensing Capabilities</h3>
+                    <ul class="space-y-4 text-muted">
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Multi-gas Olfactory Array</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Predictive Wind Spread Modeling</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Real-time Emission Alerts</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <footer class="py-10 text-center glass-panel mt-auto"><p class="text-muted text-sm">&copy; 2025 AlphaIndies.</p></footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 8: CAPABILITY - 3D DIGITAL TWIN
+         ========================================== -->
+    <div id="view-twin" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+        <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+            <div class="max-w-5xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-4">05 / Mapping</div>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-textmain">3D Digital Twin.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Virtualizing Reality.</span></h1>
+                <div class="mt-12 rounded-3xl overflow-hidden shadow-2xl relative border border-white/50 h-[400px]">
+                    <img src="images/digital-twin.jpg" onerror="this.src='https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80'" class="w-full h-full object-cover" alt="Digital Twin">
+                </div>
+            </div>
+        </section>
+        <section class="py-20 px-6 bg-white relative">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center animate-on-scroll">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4 text-textmain">High-Fidelity Photogrammetry</h2>
+                    <div class="w-12 h-1 bg-accent rounded-full mb-6"></div>
+                    <p class="text-muted text-lg">We capture millions of data points to generate millimeter-accurate, interactive 3D models of construction sites, heritage monuments, and industrial plants. Inspect infrastructure without ever setting foot on site.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border border-accent/10">
+                    <h3 class="font-bold text-xl mb-4">Mapping Specs</h3>
+                    <ul class="space-y-4 text-muted">
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> LiDAR Point Cloud Generation</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Centimeter-Level Precision</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Automated Structural Defect AI</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <footer class="py-10 text-center glass-panel mt-auto"><p class="text-muted text-sm">&copy; 2025 AlphaIndies.</p></footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 9: CAPABILITY - SMART FARMING
+         ========================================== -->
+    <div id="view-farming" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+        <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+            <div class="max-w-5xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-4">06 / Agriculture</div>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-textmain">Predictive Smart Farming.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Data-Driven Yields.</span></h1>
+                <div class="mt-12 rounded-3xl overflow-hidden shadow-2xl relative border border-white/50 h-[400px]">
+                    <img src="images/agriculture.jpg" onerror="this.src='https://images.unsplash.com/photo-1592982537447-6f2a6a0c6c22?auto=format&fit=crop&w=1200&q=80'" class="w-full h-full object-cover" alt="Smart Farming">
+                </div>
+            </div>
+        </section>
+        <section class="py-20 px-6 bg-white relative">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center animate-on-scroll">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4 text-textmain">Multispectral Crop Analysis</h2>
+                    <div class="w-12 h-1 bg-accent rounded-full mb-6"></div>
+                    <p class="text-muted text-lg">Spot crop disease and hydration issues weeks before they are visible to the human eye. We process NDVI (Normalized Difference Vegetation Index) data directly on the drone to immediately notify farmers of problem zones.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border border-accent/10">
+                    <h3 class="font-bold text-xl mb-4">Agri-Metrics</h3>
+                    <ul class="space-y-4 text-muted">
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> On-board NDVI Processing</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Targeted Pesticide Spraying</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Soil Moisture Heatmaps</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <footer class="py-10 text-center glass-panel mt-auto"><p class="text-muted text-sm">&copy; 2025 AlphaIndies.</p></footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 10: CAPABILITY - MEDICAL RESPONSE
+         ========================================== -->
+    <div id="view-medical" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+        <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+            <div class="max-w-5xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-4">07 / Emergency</div>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-textmain">Medical Response.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Lifesaving Logistics.</span></h1>
+                <div class="mt-12 rounded-3xl overflow-hidden shadow-2xl relative border border-white/50 h-[400px]">
+                    <img src="images/medical.jpg" onerror="this.src='https://images.unsplash.com/photo-1516841273335-e39b37888115?auto=format&fit=crop&w=1200&q=80'" class="w-full h-full object-cover" alt="Medical Response">
+                </div>
+            </div>
+        </section>
+        <section class="py-20 px-6 bg-white relative">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center animate-on-scroll">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4 text-textmain">Rapid Aerial Deployment</h2>
+                    <div class="w-12 h-1 bg-accent rounded-full mb-6"></div>
+                    <p class="text-muted text-lg">In critical moments, traffic and impassable terrain cost lives. Our high-speed delivery drones transport defibrillators, antivenoms, and emergency blood supplies directly to coordinates over zero-infrastructure paths.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border border-accent/10">
+                    <h3 class="font-bold text-xl mb-4">Logistics Features</h3>
+                    <ul class="space-y-4 text-muted">
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Temperature-Controlled Payload</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Winch-Drop Mechanics</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Priority Highway Corridors</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <footer class="py-10 text-center glass-panel mt-auto"><p class="text-muted text-sm">&copy; 2025 AlphaIndies.</p></footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 11: CAPABILITY - TACTICAL RECON
+         ========================================== -->
+    <div id="view-recon" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+        <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+            <div class="max-w-5xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-4">08 / Defense</div>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-textmain">Tactical Recon.<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Silent Observation.</span></h1>
+                <div class="mt-12 rounded-3xl overflow-hidden shadow-2xl relative border border-white/50 h-[400px]">
+                    <img src="images/defense.jpg" onerror="this.src='https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1200&q=80'" class="w-full h-full object-cover" alt="Tactical Recon">
+                </div>
+            </div>
+        </section>
+        <section class="py-20 px-6 bg-white relative">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center animate-on-scroll">
+                <div>
+                    <h2 class="text-3xl font-bold mb-4 text-textmain">Encrypted Intelligence Gathering</h2>
+                    <div class="w-12 h-1 bg-accent rounded-full mb-6"></div>
+                    <p class="text-muted text-lg">Designed for low acoustic signatures and high endurance, our recon units provide military and security forces with encrypted, jam-resistant live feeds. Thermal imaging ensures zero visibility drops during night ops.</p>
+                </div>
+                <div class="glass-panel p-8 rounded-2xl border border-accent/10">
+                    <h3 class="font-bold text-xl mb-4">Defense Specs</h3>
+                    <ul class="space-y-4 text-muted">
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> AES-256 Encrypted Telemetry</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> FLIR Thermal Imaging</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Anti-Jamming Frequency Hopping</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <footer class="py-10 text-center glass-panel mt-auto"><p class="text-muted text-sm">&copy; 2025 AlphaIndies.</p></footer>
+    </div>
+
+    <!-- ==========================================
+         VIEW 12: COMPANY PAGE
+         ========================================== -->
+    <div id="view-company" class="page-view relative">
+        <nav class="fixed top-0 w-full z-50 glass-panel border-b border-accent/10 transition-all duration-300">
+            <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" onclick="switchPage('view-home'); return false;" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-accent to-accent2 flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </div>
+                    <span class="font-bold text-lg text-textmain group-hover:text-accent transition-colors">Back to Home</span>
+                </a>
+            </div>
+        </nav>
+        
+        <!-- Hero Section -->
+        <section class="relative pt-32 pb-20 px-6 overflow-hidden bg-white">
+            <div class="max-w-5xl mx-auto relative z-10 text-center animate-on-scroll is-visible">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent font-bold text-sm tracking-wide mb-4">About Us</div>
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 text-textmain">Building the Future of<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-textmain to-accent">Autonomous Robotics.</span></h1>
+                <p class="mt-4 max-w-2xl text-lg text-muted mx-auto mb-10">
+                    We are a deep-tech company engineering the perfect synergy between advanced hardware, edge AI, and scalable cloud infrastructure.
+                </p>
+            </div>
+        </section>
+
+        <!-- Our Mission Section (Image on Right) -->
+        <section class="py-20 px-6 bg-base relative border-t border-accent/5">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="animate-on-scroll">
+                    <h3 class="text-accent font-bold tracking-wide uppercase text-sm mb-2">Our Mission</h3>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-textmain">Empowering Industries with Intelligent Edge AI</h2>
+                    <div class="w-16 h-1.5 bg-gradient-to-r from-accent to-accent2 rounded-full mb-8"></div>
+                    <p class="text-muted text-lg mb-6 leading-relaxed">
+                        At AlphaIndies, we believe the future of industrial automation and environmental monitoring lies at the edge. Our mission is to eliminate the reliance on cloud infrastructure for critical robotic decision-making.
+                    </p>
+                    <ul class="space-y-4 text-muted mt-6">
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Real-time autonomy without internet connectivity.</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Scalable, swarm-based mapping operations.</li>
+                        <li class="flex items-center gap-3"><div class="w-2 h-2 rounded-full bg-accent"></div> Cost-effective hardware integrations for all terrains.</li>
+                    </ul>
+                </div>
+                <div class="relative animate-on-scroll" style="transition-delay: 200ms;">
+                    <div class="absolute inset-0 bg-accent/5 rounded-3xl transform translate-x-4 translate-y-4"></div>
+                    <!-- USER IMAGE PLACEHOLDER: Update 'src' to your local image -->
+                    <img src="images/company-mission.jpg" onerror="this.src='https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80'" class="relative rounded-3xl shadow-glass border border-white/50 object-cover h-[450px] w-full" alt="Company Mission">
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Story Section (Image on Left) -->
+        <section class="py-20 px-6 bg-white relative">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <!-- USER IMAGE PLACEHOLDER: Update 'src' to your local image -->
+                <div class="relative animate-on-scroll order-2 md:order-1">
+                    <div class="absolute inset-0 bg-accent2/5 rounded-3xl transform -translate-x-4 translate-y-4"></div>
+                    <img src="images/company-story.jpg" onerror="this.src='https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80'" class="relative rounded-3xl shadow-glass border border-white/50 object-cover h-[450px] w-full" alt="Company Story">
+                </div>
+                <div class="animate-on-scroll order-1 md:order-2" style="transition-delay: 200ms;">
+                    <h3 class="text-accent font-bold tracking-wide uppercase text-sm mb-2">Our Story</h3>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-textmain">From a College Lab to Deep-Tech Innovation</h2>
+                    <div class="w-16 h-1.5 bg-gradient-to-r from-accent to-accent2 rounded-full mb-8"></div>
+                    <p class="text-muted text-lg mb-6 leading-relaxed">
+                        What started as an ambitious project by a group of passionate B.Tech students in AI & Data Science quickly evolved into a fully-fledged vision for the future of commercial robotics.
+                    </p>
+                    <p class="text-muted text-lg leading-relaxed">
+                        By combining our complementary skills in hardware engineering, computer vision, and cloud architecture, we developed our proprietary SkyLord Navigation Algorithm. Today, we are building drones capable of true localized thought to solve real-world problems in agriculture, defense, and environmental tracking.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="py-20 px-6 relative bg-base border-t border-accent/5">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h3 class="text-accent font-bold tracking-wide uppercase text-sm mb-2">Behind the build</h3>
+                    <h2 class="text-3xl md:text-4xl font-bold text-textmain">Our Team</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Member 1: Rahul -->
+                    <div class="glass-panel bg-white p-8 rounded-2xl text-center animate-on-scroll shadow-glass transition-transform duration-300">
+                        <!-- UPLOAD INSTRUCTION: Place 'rahul.jpg' in your images folder -->
+                        <img src="images/rahul.jpg" onerror="this.src='https://placehold.co/300x300/f6fbff/0b74de?text=Upload+Photo'" alt="Rahul Raveendran" class="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-accent/10 shadow-lg object-cover">
+                        <h4 class="font-bold text-xl text-textmain mb-1">Rahul Raveendran</h4>
+                        <p class="text-accent text-xs font-bold uppercase tracking-wider mb-4">Dashboard Engineer</p>
+                        <p class="text-muted text-sm mb-6">Expert in data visualization and dashboard UX interfaces for mission control.</p>
+                        <div class="flex justify-center gap-5 text-accent">
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.866l5.6-6.812zm9.201-1.451l4.623-3.746v9.458l-4.623-5.712z"/></svg>
+                        </div>
+                    </div>
+                    
+                    <!-- Member 2: Avinash -->
+                    <div class="glass-panel bg-white p-8 rounded-2xl text-center animate-on-scroll shadow-glass transition-transform duration-300" style="transition-delay: 100ms;">
+                        <!-- UPLOAD INSTRUCTION: Place 'avinash.jpg' in your images folder -->
+                        <img src="images/avinash.jpg" onerror="this.src='https://placehold.co/300x300/f6fbff/0b74de?text=Upload+Photo'" alt="Avinash S" class="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-accent/10 shadow-lg object-cover">
+                        <h4 class="font-bold text-xl text-textmain mb-1">Avinash S</h4>
+                        <p class="text-accent text-xs font-bold uppercase tracking-wider mb-4">Cloud Engineer</p>
+                        <p class="text-muted text-sm mb-6">Manages cloud infrastructure, database scalability, and secure API endpoints.</p>
+                        <div class="flex justify-center gap-5 text-accent">
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.866l5.6-6.812zm9.201-1.451l4.623-3.746v9.458l-4.623-5.712z"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- Member 3: Ranjith -->
+                    <div class="glass-panel bg-white p-8 rounded-2xl text-center animate-on-scroll shadow-glass transition-transform duration-300" style="transition-delay: 200ms;">
+                        <!-- UPLOAD INSTRUCTION: Place 'ranjith.jpg' in your images folder -->
+                        <img src="images/ranjith.jpg" onerror="this.src='https://placehold.co/300x300/f6fbff/0b74de?text=Upload+Photo'" alt="Ranjith V" class="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-accent/10 shadow-lg object-cover">
+                        <h4 class="font-bold text-xl text-textmain mb-1">Ranjith V</h4>
+                        <p class="text-accent text-xs font-bold uppercase tracking-wider mb-4">AI-System Integration Engineer</p>
+                        <p class="text-muted text-sm mb-6">Leads the AI pipeline architecture and seamless integration of hardware, software, and cloud systems.</p>
+                        <div class="flex justify-center gap-5 text-accent">
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                            <svg class="w-5 h-5 cursor-pointer hover:text-accent2 transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M0 3v18h24v-18h-24zm6.623 7.929l-4.623 5.712v-9.458l4.623 3.746zm-4.141-5.929h19.035l-9.517 7.713-9.518-7.713zm5.694 7.188l3.824 3.099 3.83-3.104 5.612 6.817h-18.866l5.6-6.812zm9.201-1.451l4.623-3.746v9.458l-4.623-5.712z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-10 text-center glass-panel mt-auto bg-white border-t border-accent/10">
+            <p class="text-muted text-sm">&copy; 2025 AlphaIndies. All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <!-- ==========================================
+         SPA ROUTING & INTERACTIVITY SCRIPTS
+         ========================================== -->
+    <script>
+        // 1. SPA Router Logic
+        function switchPage(pageId) {
+            const targetView = document.getElementById(pageId);
+            
+            // SAFETY CHECK: Handle missing pages gracefully so the app doesn't crash
+            if (!targetView) {
+                console.warn(`[SPA Router] The page ID '${pageId}' does not exist in the DOM.`);
+                
+                // Create a sleek, non-intrusive popup notification
+                const popup = document.createElement('div');
+                popup.className = 'fixed bottom-6 right-6 bg-textmain border border-accent/30 text-white px-6 py-4 rounded-xl shadow-glow z-[9999] font-bold transition-all duration-300 transform translate-y-0 opacity-100 flex items-center gap-3';
+                popup.innerHTML = `<svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Page under construction!`;
+                document.body.appendChild(popup);
+                
+                // Fade out and remove the popup after 2.5 seconds
+                setTimeout(() => {
+                    popup.style.opacity = '0';
+                    popup.style.transform = 'translateY(10px)';
+                    setTimeout(() => popup.remove(), 300);
+                }, 2500);
+                
+                // If the app is currently on an invalid state, force it back to Home
+                if (!document.querySelector('.page-view.active')) {
+                    document.getElementById('view-home').classList.add('active');
+                }
+                return; // Stop execution to prevent the TypeError
+            }
+
+            // Hide all views
+            document.querySelectorAll('.page-view').forEach(view => {
+                view.classList.remove('active');
+            });
+            
+            // Show target view
+            targetView.classList.add('active');
+            
+            // Scroll back to top instantly when switching
+            window.scrollTo(0, 0);
+
+            // Re-trigger animations if moving to a subpage
+            if(pageId !== 'view-home') {
+                initScrollAnimations();
+            }
+        }
+
+        // 2. Intersection Observer for Scroll Animations (Dynamic for any page)
+        function initScrollAnimations() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target); // Run once per element
+                    }
+                });
+            }, observerOptions);
+
+            // Reset and Re-observe only elements in the currently active page
+            document.querySelectorAll('.page-view.active .animate-on-scroll').forEach((elem) => {
+                elem.classList.remove('is-visible'); // Reset for fresh animation
+                observer.observe(elem);
+            });
+        }
+
+        // 3. Navbar Glass Effect on Scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            window.addEventListener('scroll', () => {
+                const navbars = document.querySelectorAll('.page-view nav.fixed');
+                if (window.scrollY > 20) {
+                    navbars.forEach(nav => nav.classList.add('shadow-glass'));
+                } else {
+                    navbars.forEach(nav => nav.classList.remove('shadow-glass'));
+                }
+            });
+        });
+    </script>
+</body>
+</html>
